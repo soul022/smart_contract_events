@@ -42,29 +42,6 @@ curl -s 'http://localhost:3000/events?integrator=<known-integrator>&limit=5'
 
 ---
 
-## Fresh Docker reset
-
-Use one Compose project name for both `down` and `up`; this keeps containers and volumes scoped to the same stack:
-
-```bash
-docker compose -p smart_contract_events down --volumes --remove-orphans
-docker compose -p smart_contract_events config --volumes
-docker volume ls | grep -E 'smart_contract_events|mongo|lifi' || true
-# Optional cleanup for known old Mongo volumes:
-# docker volume rm <volume-name>
-cp .env.example .env
-docker compose -p smart_contract_events up --build
-```
-
-Notes:
-
-- `--volumes` deletes this Compose project's MongoDB volume, including all scanned events and `scan_state`.
-- Existing `.env` files may contain provider credentials. Copy `.env.example` only for a fresh setup.
-- Old data in Compass usually means another MongoDB instance or volume is still active. Useful checks: `docker ps`, `lsof -nP -iTCP:27017`, and `docker volume ls`.
-- Docker cache can be bypassed with `docker compose -p smart_contract_events build --no-cache` before `up`.
-
----
-
 ## Local usage
 
 ```bash
